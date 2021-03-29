@@ -2,7 +2,7 @@
 
 Data and code from Cappello and Boersma 2021 Ecology
 
-This repository mirrors the Zenodo archive ()
+This repository mirrors the [] archive ()
 
 Cappello, C. D., and Boersma, P. D. 2021. Consequences of phenological shifts and a compressed breeding period in Magellanic penguins. Ecology. 
 
@@ -22,7 +22,7 @@ Phenological shifts may ameliorate negative effects of climate change or create 
 
 #### colony.data
 
-BookYear = year at the beginning of the breeding season  
+BookYear = The starting year of a breeding season. Breeding seasons span from September 1st to August 31st of the following year  
 MedianHatch = Median hatch date, presented as days since November 1st  
 nHatch = Number of chicks used for median hatch date  
 MedianFledge = Median fledge date (date at which 50% of chicks had fledged), presented as days since November 1st  
@@ -32,32 +32,31 @@ MedianNestlingDur = Median nestling duration
 
 #### flg.morph.data
 
-BookYear = year at the beginning of the breeding season  
-ChickSummSeq = individual chick identifier  
-AgeLastMeas = age when fledgling was last measured  
-MS = Mass (kg) of chick at last measure  
-BL = Bill length (cm) at last measure  
-BD = Bill depth (cm) at last measure  
-FL = Flipper length (cm) at last measure   
-FT = Foot length (cm) at last measure  
-smi = scaled mass index of flipper length on mass, see manuscript for equation  
-DWN = Down cover at last measure (no down = 0, one-quarter covered = 1, two-quarters covered = 2, three-quarters covered = 3, completely covered = 4)  
-NestSummSeq = individual nest identifier  
+BookYear = The starting year of a breeding season. Breeding seasons span from September 1st to August 31st of the following year   
+ChickSummSeq = Individual chick ID  
+AgeLastMeas = Age when fledgling was last measured  
+Weightkg = Mass (kg) of chick at last measure  
+BillLength = Bill length (cm) at last measure  
+BillDepth = Bill depth (cm) at last measure  
+Flipper = Flipper length (cm) at last measure   
+Foot = Foot length (cm) at last measure  
+smi = Scaled mass index of flipper length on mass, see manuscript for equation  
+Down = Down cover at last measure (0 = no down, 1 = 1/4 of body with down, 2 = 2/4 
+of body with down, 3 = 3/4 of body with down, 4 = fully covered w/ down)   
+NestSummSeq = Individual nest ID  
 
 #### flg.morph.data
 
-BookYear = year at the beginning of the breeding season  
-ChickSummSeq = individual chick identifier  
-RecruitYN = was the fledgling seen again at Punta Tombo as a juvenile or adult (yes=1, no=0)  
-FlgDate = date fledgling was last seen in its nest, presented as days since November 1st  
-FlgAge = age of fledgling when it was last seen in its nest    
-MS = Mass (kg) of chick at last measure  
-BL = Bill length (cm) at last measure  
-BD = Bill depth (cm) at last measure  
-FL = Flipper length (cm) at last measure   
-FT = Foot length (cm) at last measure  
-smi = scaled mass index of flipper length on mass, see manuscript for equation    
-DWN = Down cover at last measure (no down = 0, one-quarter covered = 1, two-quarters covered = 2, three-quarters covered = 3, completely covered=4)  
+BookYear = The starting year of a breeding season. Breeding seasons span from September 1st to August 31st of the following year.  ChickSummSeq = individual chick ID  
+RecruitYN = Was the fledgling seen again at Punta Tombo as a juvenile or adult? (yes=1, no=0)  
+FlgDate = Date fledgling was last seen in its nest, presented as days since November 1st  
+FlgAge = Age of fledgling when it was last seen in its nest    
+Weightkg = Mass (kg) of chick at last measure  
+BillLength = Bill length (cm) at last measure  
+BillDepth = Bill depth (cm) at last measure  
+Flipper = Flipper length (cm) at last measure   
+Foot = Foot length (cm) at last measure  
+smi = Scaled mass index of flipper length on mass, see manuscript for equation    
+Down = Down cover at last measure (0 = no down, 1 = 1/4 of body with down, 2 = 2/4
+of body with down, 3 = 3/4 of body with down, 4 = fully covered w/ down)   
 
-
-_end_
