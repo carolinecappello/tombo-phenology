@@ -1,14 +1,21 @@
 #### load packages ####
 
-library(lme4); library(lme4)
+library(lme4)
+library(tidyverse)
 
 #### load the data ####
 
-setwd('C:/Users/Penguin/Dropbox/r-projects/compressed phenology/')
+#setwd('C:/Users/Penguin/Dropbox/r-projects/compressed phenology/')
 
 colony.data <- readRDS("colony.data.Rds")
 flg.morph.data <- readRDS("flg.morph.data.Rds")
+colnames(flg.morph.data)[3] <- "AgeLastMeas"
 flg.recruit.data <- readRDS("flg.recruit.data.Rds")
+
+#write.csv(colony.data, "colony.data.csv", row.names = FALSE)
+#write.csv(flg.morph.data, "flg.morph.data.csv", row.names = FALSE)
+#write.csv(flg.recruit.data, "flg.recruit.data.csv", row.names = FALSE)
+
 
 ####
 #### colony trends ####
@@ -32,121 +39,139 @@ confint(fmod.w)
 nmod.w <- lm(MedianNestlingDur ~ BookYear,
              data = colony.data,
              weights = log(nHatched))
+nmod.w2 <- lm(MedianNestlingDur ~ BookYear,
+              data = colony.data,
+              weights = log(nFledged))
 summary(nmod.w)
+summary(nmod.w2)
 confint(nmod.w) 
+confint(nmod.w2)
 
 ####
 #### fledgling morphology ####
 ####
 
 # mass
-wtx <- lmer(WT ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.raw, REML=F)
-wtx.nox <- lmer(WT ~ AgeLastMeas + BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-wtx.age <- lmer(WT ~ AgeLastMeas + (1|NestSummSeq), data = flg.raw, REML=F)
-wtx.yr <- lmer(WT ~ BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-wtx.null <- lmer(WT ~ 1 + (1|NestSummSeq), data = flg.raw, REML=F)
+ms.x <- lmer(WT ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ms.nox <- lmer(WT ~ AgeLastMeas + c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ms.age <- lmer(WT ~ AgeLastMeas + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ms.yr <- lmer(WT ~ c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ms.null <- lmer(WT ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
 
-AIC()
-summary()
-
-# bill depth
-bdx <- lmer(BD ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.raw, REML=F)
-bdx.nox <- lmer(BD ~ AgeLastMeas + BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-bdx.age <- lmer(BD ~ AgeLastMeas + (1|NestSummSeq), data = flg.raw, REML=F)
-bdx.yr <- lmer(BD ~ BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-bdx.null <- lmer(BD ~ 1 + (1|NestSummSeq), data = flg.raw, REML=F)
-
-AIC()
-summary()
+AIC(ms.x,ms.nox,ms.age,ms.yr,ms.null)
+summary(ms.x)
 
 # bill length
-blx <- lmer(BL ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.raw, REML=F)
-blx.nox <- lmer(BL ~ AgeLastMeas + BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-blx.age <- lmer(BL ~ AgeLastMeas + (1|NestSummSeq), data = flg.raw, REML=F)
-blx.yr <- lmer(BL ~ BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-blx.null <- lmer(BL ~ 1 + (1|NestSummSeq), data = flg.raw, REML=F)
+bl.x <- lmer(BL ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bl.nox <- lmer(BL ~ AgeLastMeas + c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bl.age <- lmer(BL ~ AgeLastMeas + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bl.yr <- lmer(BL ~ c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bl.null <- lmer(BL ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
 
-AIC()
-summary()
+AIC(bl.x,bl.nox,bl.age,bl.yr,bl.null)
+summary(bl.nox)
+
+# bill depth
+bd.x <- lmer(BD ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bd.nox <- lmer(BD ~ AgeLastMeas + c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bd.age <- lmer(BD ~ AgeLastMeas + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bd.yr <- lmer(BD ~ c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+bd.null <- lmer(BD ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
+
+AIC(bd.x,bd.nox,bd.age,bd.yr,bd.null)
+summary(bd.age)
 
 # flipper
-flx <- lmer(FL ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.raw, REML=F)
-flx.nox <- lmer(FL ~ AgeLastMeas + BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-flx.age <- lmer(FL ~ AgeLastMeas + (1|NestSummSeq), data = flg.raw, REML=F)
-flx.yr <- lmer(FL ~ BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-flx.null <- lmer(FL ~ 1 + (1|NestSummSeq), data = flg.raw, REML=F)
+fl.x <- lmer(FL ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+fl.nox <- lmer(FL ~ AgeLastMeas + c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+fl.age <- lmer(FL ~ AgeLastMeas + (1|NestSummSeq), data = flg.morph.data, REML=F)
+fl.yr <- lmer(FL ~ c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+fl.null <- lmer(FL ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
 
-AIC()
-summary()
+AIC(fl.x, fl.nox, fl.age, fl.yr, fl.null)
+
 
 # foot
-ftx <- lmer(FT ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.raw, REML=F)
-ftx.nox <- lmer(FT ~ AgeLastMeas + BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-ftx.age <- lmer(FT ~ AgeLastMeas + (1|NestSummSeq), data = flg.raw, REML=F)
-ftx.yr <- lmer(FT ~ BookYear + (1|NestSummSeq), data = flg.raw, REML=F)
-ftx.null <- lmer(FT ~ 1 + (1|NestSummSeq), data = flg.raw, REML=F)
+ft.x <- lmer(FT ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ft.nox <- lmer(FT ~ AgeLastMeas + c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ft.age <- lmer(FT ~ AgeLastMeas + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ft.yr <- lmer(FT ~ c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+ft.null <- lmer(FT ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
 
-AIC()
-summary()
+AIC(ft.x, ft.nox, ft.age, ft.yr, ft.null)
+summary(ft.x)
 
 # smi
-smx <- lmer(smi ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg, REML=F)
-smx.nox <- lmer(smi ~ AgeLastMeas + BookYear + (1|NestSummSeq), data = flg, REML=F)
-smx.age <- lmer(smi ~ AgeLastMeas + (1|NestSummSeq), data = flg, REML=F)
-smx.yr <- lmer(smi ~ BookYear + (1|NestSummSeq), data = flg, REML=F)
-smx.null <- lmer(smi ~ 1 + (1|NestSummSeq), data = flg, REML=F)
+sm.x <- lmer(smi ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+sm.nox <- lmer(smi ~ AgeLastMeas + c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+sm.age <- lmer(smi ~ AgeLastMeas + (1|NestSummSeq), data = flg.morph.data, REML=F)
+sm.yr <- lmer(smi ~ c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
+sm.null <- lmer(smi ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
 
-AIC()
-summary()
+AIC(sm.x, sm.nox, sm.age, sm.yr, sm.null)
+summary(sm.x)
 
 # down
 
-dwx <- glmer(cbind(DWN, 4-DWN) ~ AgeLastMeas*c(BookYear-2000) + (1|NestSummSeq), 
-             data = down, family = 'binomial')
-dwx.nox <- glmer(cbind(DWN, 4-DWN) ~ AgeLastMeas + c(BookYear-2000) + (1|NestSummSeq), 
-             data = down, family = 'binomial')
-dwx.age <- glmer(cbind(DWN,4-DWN) ~ AgeLastMeas + (1|NestSummSeq), 
-             data = down, family = 'binomial') 
-dwx.yr <- glmer(cbind(DWN, 4-DWN) ~ c(BookYear-2000) + (1|NestSummSeq), 
-             data = down, family = 'binomial')
-dwx.null <- glmer(cbind(DWN, 4-DWN) ~ 1 + (1|NestSummSeq), 
-             data = down, family = 'binomial')
+test <- na.omit(flg.morph.data)
 
-AIC()
-summary()
+dw.x <- glmer(cbind(DWN, 4-DWN) ~ AgeLastMeas*c(BookYear-2000) + (1|NestSummSeq), 
+             data = filter(flg.morph.data, !is.na(DWN)), family = 'binomial')
+dw.nox <- glmer(cbind(DWN, 4-DWN) ~ AgeLastMeas + c(BookYear-2000) + (1|NestSummSeq), 
+             data = filter(flg.morph.data, !is.na(DWN)), family = 'binomial')
+dw.age <- glmer(cbind(DWN,4-DWN) ~ AgeLastMeas + (1|NestSummSeq), 
+             data = filter(flg.morph.data, !is.na(DWN)), family = 'binomial') 
+dw.yr <- glmer(cbind(DWN, 4-DWN) ~ c(BookYear-2000) + (1|NestSummSeq), 
+             data = filter(flg.morph.data, !is.na(DWN)), family = 'binomial')
+dw.null <- glmer(cbind(DWN, 4-DWN) ~ 1 + (1|NestSummSeq), 
+             data = filter(flg.morph.data, !is.na(DWN)), family = 'binomial')
+
+AIC(dw.x,dw.nox,dw.age,dw.yr,dw.null)
+summary(dw.age)
+
+head(flg.morph.data)
 
 ####
 #### fledgling survival ####
 ####
 
-wtr <- glmer(RecruitYN ~ WT + (1|BookYear), data=morph, family='binomial')
-summary(wtr); confint(wtr)
+wtr <- glmer(RecruitYN ~ WT + (1|BookYear), data=flg.recruit.data, family='binomial')
+summary(wtr)
+confint(wtr)
 
-blr <- glmer(RecruitYN ~ BL + (1|BookYear), data=morph, family='binomial')
-summary(blr); confint(blr)
+blr <- glmer(RecruitYN ~ BL + (1|BookYear), data=flg.recruit.data, family='binomial')
+summary(blr)
+confint(blr)
 
-bdr <- glmer(RecruitYN ~ BD + (1|BookYear), data=morph, family='binomial')
-summary(bdr); confint(bdr)
+bdr <- glmer(RecruitYN ~ BD + (1|BookYear), data=flg.recruit.data, family='binomial')
+summary(bdr)
+confint(bdr)
 
-flr <- glmer(RecruitYN ~ FL + (1|BookYear), data=morph, family='binomial')
-summary(flr); confint(flr)
+flr <- glmer(RecruitYN ~ FL + (1|BookYear), data=flg.recruit.data, family='binomial')
+summary(flr)
+confint(flr)
 
-ftr <- glmer(RecruitYN ~ FT + (1|BookYear), data=morph, family='binomial')
-summary(ftr); confint(ftr)
+ftr <- glmer(RecruitYN ~ FT + (1|BookYear), data=flg.recruit.data, family='binomial')
+summary(ftr)
+confint(ftr)
 
-smr <- glmer(RecruitYN ~ smi + (1|BookYear), data=morph, family='binomial')
-summary(smr); confint(smr)
+smr <- glmer(RecruitYN ~ smi + (1|BookYear), data=flg.recruit.data, family='binomial')
+summary(smr)
+confint(smr)
 
-dwr <- glmer(RecruitYN ~ DWN + (1|BookYear), data=down.comp, family='binomial')
-summary(dwr); confint(dwr)
+dwr <- glmer(RecruitYN ~ DWN + (1|BookYear), data=filter(flg.recruit.data, !is.na(DWN)),
+             family='binomial')
+summary(dwr)
+confint(dwr)
 
-AIC(wtr,blr,bdr,flr,ftr,smr)
+arrange(AIC(wtr,blr,bdr,flr,ftr,smr), AIC) %>% 
+  mutate(deltaAIC = AIC-min(AIC))
 
-flgN1.mix.f5 <- glmer(RecruitYN ~ DateChickAQIN1 + (1|BookYear), data = flg5, family='binomial')
+flgN1.mix.f5 <- glmer(RecruitYN ~ FlgDate + (1|BookYear), data = flg.recruit.data, family='binomial')
 summary(flgN1.mix.f5) # p = 0.17
 confint(flgN1.mix.f5)
 
-flgAge <- glmer(RecruitYN ~ AgeLastAQI + (1|BookYear), ## THIS IS WHAT IS IN THE ECOLOGY PAPER REVISIONS JAN 2021, FLG5
-                data = flg5, family = 'binomial')
+flgAge <- glmer(RecruitYN ~ FlgAge + (1|BookYear), ## THIS IS WHAT IS IN THE ECOLOGY PAPER REVISIONS JAN 2021, FLG5
+                data = flg.recruit.data, family = 'binomial')
 summary(flgAge)
 confint(flgAge)
