@@ -5,19 +5,7 @@ library(tidyverse)
 
 #### load the data ####
 
-#setwd('C:/Users/Penguin/Dropbox/r-projects/compressed phenology/')
-
 load("phenology_data.RData")
-
-#colony.data <- readRDS("colony.data.Rds")
-#flg.morph.data <- readRDS("flg.morph.data.Rds")
-#colnames(flg.morph.data)[3] <- "AgeLastMeas"
-#flg.recruit.data <- readRDS("flg.recruit.data.Rds")
-
-#write.csv(colony.data, "colony.data.csv", row.names = FALSE)
-#write.csv(flg.morph.data, "flg.morph.data.csv", row.names = FALSE)
-#write.csv(flg.recruit.data, "flg.recruit.data.csv", row.names = FALSE)
-
 
 ####
 #### colony trends ####
@@ -91,7 +79,7 @@ ft.null <- lmer(Foot ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
 AIC(ft.x, ft.nox, ft.age, ft.yr, ft.null)
 summary(ft.x)
 
-# smi
+# scaled mass index
 sm.x <- lmer(smi ~ AgeLastMeas*c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
 sm.nox <- lmer(smi ~ AgeLastMeas + c(BookYear-1900) + (1|NestSummSeq), data = flg.morph.data, REML=F)
 sm.age <- lmer(smi ~ AgeLastMeas + (1|NestSummSeq), data = flg.morph.data, REML=F)
@@ -101,8 +89,7 @@ sm.null <- lmer(smi ~ 1 + (1|NestSummSeq), data = flg.morph.data, REML=F)
 AIC(sm.x, sm.nox, sm.age, sm.yr, sm.null)
 summary(sm.x)
 
-# down
-
+# down cover
 dw.x <- glmer(cbind(Down, 4-Down) ~ AgeLastMeas*c(BookYear-2000) + (1|NestSummSeq), 
              data = filter(flg.morph.data, !is.na(Down)), family = 'binomial')
 dw.nox <- glmer(cbind(Down, 4-Down) ~ AgeLastMeas + c(BookYear-2000) + (1|NestSummSeq), 
@@ -121,45 +108,55 @@ summary(dw.age)
 #### fledgling survival ####
 ####
 
+# mass
 msr <- glmer(RecruitYN ~ Weightkg + (1|BookYear), data=flg.recruit.data, family='binomial')
 summary(msr)
 confint(msr)
 
+# bill length
 blr <- glmer(RecruitYN ~ BillLength + (1|BookYear), data=flg.recruit.data, family='binomial')
 summary(blr)
 confint(blr)
 
+# bill depth
 bdr <- glmer(RecruitYN ~ BillDepth + (1|BookYear), data=flg.recruit.data, family='binomial')
 summary(bdr)
 confint(bdr)
 
+# flipper
 flr <- glmer(RecruitYN ~ Flipper + (1|BookYear), data=flg.recruit.data, family='binomial')
 summary(flr)
 confint(flr)
 
+# foot
 ftr <- glmer(RecruitYN ~ Foot + (1|BookYear), data=flg.recruit.data, family='binomial')
 summary(ftr)
 confint(ftr)
 
+# scaled mass index
 smr <- glmer(RecruitYN ~ smi + (1|BookYear), data=flg.recruit.data, family='binomial')
 summary(smr)
 confint(smr)
 
+# compare morphometric models
 arrange(AIC(msr,blr,bdr,flr,ftr,smr), AIC) %>% 
   mutate(deltaAIC = AIC-min(AIC))
 
+# down cover
 dwr <- glmer(RecruitYN ~ Down + (1|BookYear), 
              data=filter(flg.recruit.data, !is.na(Down)),
              family='binomial')
 summary(dwr)
-confint(dwr, method = "Wald")
+confint(dwr)
 
+# fledge date
 dater <- glmer(RecruitYN ~ FlgDate + (1|BookYear), 
                       data = flg.recruit.data, family='binomial')
 summary(dater) 
-confint(dater, method = "Wald")
+confint(dater)
 
+# fledge age
 ager <- glmer(RecruitYN ~ FlgAge + (1|BookYear), 
                 data = flg.recruit.data, family = 'binomial')
 summary(ager)
-confint(ager, method = "Wald")
+confint(ager)
