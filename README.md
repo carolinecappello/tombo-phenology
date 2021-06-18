@@ -2,7 +2,9 @@
 
 Data and code from Cappello and Boersma 2021 Ecology
 
-Cappello, C. D., and Boersma, P. D. 2021. Consequences of phenological shifts and a compressed breeding period in Magellanic penguins. Ecology. 
+Cappello, C. D., and Boersma, P. D. 2021. Consequences of phenological shifts and a compressed breeding period in Magellanic penguins. Ecology. https://doi.org/10.1002/ecy.3443
+
+This repository mirrors the Zenodo archive: https://zenodo.org/record/4658311#.YMzUrzZKg-Q
 
 __Contact for questions about this dataset:__  
 Caroline Cappello  
